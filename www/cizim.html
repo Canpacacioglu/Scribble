@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<script src="cordova.js" type="text/javascript"></script>
+<script src="scripts/jquery-1.8.2.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="scripts/sketch.js"></script>
+<script type="text/javascript" src="scripts/jquery.msgBox.js"></script>
+<link rel="stylesheet" type="text/css" href="css/boyama.css">
+<link rel="stylesheet" type="text/css" href="css/msgBoxLight.css">
+<style type='text/css'>
+canvas {
+width: 776px;
+height: 644px;
+border-color :#4c82a4;
+background-color:#FFFFFF;
+border-style: groove;
+padding: 0px;
+border-width:12px;
+}
+.tools {
+margin-bottom: 10px;
+}
+.tools a {
+height: 52px; line-height: 52px;  vertical-align: middle; text-align: center; text-decoration: none; display: inline-block; color: black; font-weight: bold;
+}
+</style>
+<script type="text/javascript" charset="utf-8">
+document.addEventListener('deviceready', function() {
+//google analytics *******************************************
+GA.startTrackerWithId('UA-81813056-4')
+GA.trackView('Scribble')
+//google analytics *******************************************
+// count for ads ****************************************************************************
+//cordova.plugins.SecureLocalStorage.removeItem("usagecount");
+cordova.plugins.SecureLocalStorage.getItem("usagecount").then(function (value){
+if (value == null){
+cordova.plugins.SecureLocalStorage.setItem("usagecount" , 1);
+}
+else {
+if (value == 5){
+cordova.plugins.SecureLocalStorage.setItem("usagecount" , 0);
+if(AdMob) AdMob.prepareInterstitial( {
+adId:admobid.interstitial, 
+autoShow:true,
+isTesting:false
+} );
+
+}
+else {
+var newval = value +1;
+cordova.plugins.SecureLocalStorage.setItem("usagecount" , newval);
+}
+}
+});
+// count for ads ****************************************************************************
+//admob setttings ***************************************************************************
+var admobid = {};
+if( /(android)/i.test(navigator.userAgent) ) {
+admobid = { // for Android
+banner: 'ca-app-pub-6869992474017983/9375997553',
+interstitial: 'ca-app-pub-6869992474017983/1657046752'
+};
+} 
+else if(/(ipod|iphone|ipad)/i.test(navigator.userAgent)) {
+admobid = { // for iOS
+banner: 'ca-app-pub-3425507790759987/5372116585',
+interstitial: 'ca-app-pub-3425507790759987/1890774987'
+};
+} 
+else {
+admobid = { // for Windows Phone
+banner: 'xxx',
+interstitial: 'xxx'
+};
+}
+// show banner ******************************************************************************
+if(AdMob) AdMob.createBanner({
+adId: admobid.banner,
+position: AdMob.AD_POSITION.BOTTOM_CENTER,
+autoShow: true,
+isTesting:false});
+// show banner ******************************************************************************
+//admob setttings ***************************************************************************
+}); // on device ready close
+</script>
+
+<script type="text/javascript">
+function clear_canvas_rectangle ()
+{
+location.reload();
+}
+</script>
+<script type="text/javascript">
+function fotokaydet ()
+{
+window.canvas2ImagePlugin.saveImageDataToLibrary(
+function(msg){
+console.log(msg);
+},
+function(err){
+console.log(err);
+},
+document.getElementById('colors_sketch')
+);
+                    
+//mesaj geliyor
+$.msgBox({
+title:"Scribble",
+content:"Your Scribble is saved to photos in Ipad."
+});
+//mesaj geldi
+}
+</script>
+<script type="text/javascript">
+$(window).load(function() {
+$('#preloader').fadeOut(250, function() { $(this).remove(); });
+});
+</script>
+<script type="text/javascript">
+function paylas() {
+window.plugins.socialsharing.available(function(isAvailable) {
+if (isAvailable) {
+var canvas = document.getElementById("colors_sketch");
+var dataURL = canvas.toDataURL();
+window.plugins.socialsharing.share('You got a scribble.\n Download for free to scribble. http://bit.ly/scribble_kids', null, dataURL, null)
+
+}
+else {
+}
+});
+};
+</script>
+<script type="text/javascript">
+var myScroll;
+function loaded() {
+myScroll = new iScroll('wrapper', {hScroll:false, vScroll:true,hScrollbar: false, vScrollbar: false , bounce: false });
+}
+document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
+document.addEventListener('DOMContentLoaded', loaded, false);
+</script>
+</head>
+<body bgcolor="#a6d0b5">
+<!--ilk yükleniyor kısmı -->
+<div id="preloader">
+<table align="center" width="100%" style="height:100%" cellspacing="0" cellpadding="0">
+<tr>
+<td width="100%" align="center" valign="middle"><img src="images/bos.png" class="yukleniyor"></TD>
+</TR>
+</table>
+</div>
+<div id="giris" data-role="page">
+<div  data-role="content" id="wrapper">
+<div class='demo' id='colors_demo'>
+<table align="center" bgcolor="#a6d0b5" width="1024" cellspacing="0" cellpadding="0">
+<tr>
+<td width="224" align="center" valign="top">
+<img src="images/logo.png" width="224" height="100" border="0" alt="logo">
+<div class='tools'>
+<a href='#colors_sketch' onclick="clear_canvas_rectangle()"><img src="images/sil_buton.png" width="50" height="50" border="0" alt="kaydet"></a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<a href='#colors_sketch' onclick="fotokaydet()"><img src="images/kaydet_buton.png" width="50" height="50" border="0" alt="kaydet"></a>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<a href='#colors_sketch' onclick="paylas()"><img src="images/paylas_buton.png" width="50" height="50" border="0" alt="email"></a>
+<br><br><img src="images/bos.png" width="224" height="30"><br>
+</div>
+</td>
+<td width="800" align="center" valign="top">
+<canvas id='colors_sketch' width='776' height='644' style='background-color:#e2f2e8;'></canvas>
+<script type='text/javascript'>
+$(function() {
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-size='4' data-tool='marker'><img src='images/kalem_buton.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-size='10' data-tool='marker'><img src='images/firca_buton.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-size='20' data-tool='marker'><img src='images/buyuk_firca_buton.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("<br><img src='images/bos.png' width='224' height='25'><br>");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='eraser' data-size='10'><img src='images/silgi_buton.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#000000'><img src='images/siyah.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#ffffff'><img src='images/beyaz.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("<br><img src='images/bos.png' width='224' height='8'><br>");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#ffff00'><img src='images/sari.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#ff9900'><img src='images/turuncu.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#ff0000'><img src='images/kirmizi.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("<br><img src='images/bos.png' width='224' height='8'><br>");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#ff00ff'><img src='images/pembe.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#9900cc'><img src='images/mor.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#990000'><img src='images/bordo.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("<br><img src='images/bos.png' width='224' height='8'><br>");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#99cc66'><img src='images/fistik_yesil.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#33ff00'><img src='images/yesil.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#009900'><img src='images/koyu_yesil.png' style='border: 0px solid #666666; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 4px 4px 4px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("<br><img src='images/bos.png' width='224' height='8'><br>");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#99ccff'><img src='images/acik_mavi.png' style='border: 0px solid #333333; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 2px 2px 2px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#0066ff'><img src='images/mavi.png' style='border: 0px solid #333333; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 2px 2px 2px;-moz-box-shadow: #333333 2px 2px 2px; box-shadow: #333333 2px 2px 2px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_demo .tools').append("&nbsp;&nbsp;<a href='#colors_sketch' data-tool='marker' data-color='#000099'><img src='images/lacivert.png' style='border: 0px solid #333333; -webkit-border-radius: 30px;-moz-border-radius: 30px;border-radius: 30px;-webkit-box-shadow: #333333 2px 2px 2px 0px;-moz-box-shadow: #333333 2px 2px 2px 0px; box-shadow: #333333 2px 2px 2px 0px; width: 52px; height:52px;' alt='kalem'></a>&nbsp;&nbsp;");
+                                      $('#colors_sketch').sketch();
+});
+</script>
+</TD>
+</TR>
+</table>
+</div>
+</div>
+</TD>
+</TR>
+</table>
+</body>
+</html>
