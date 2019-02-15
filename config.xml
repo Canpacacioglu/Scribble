@@ -28,6 +28,5 @@
     <plugin name="nl-afas-cordova-plugin-securelocalstorage"  />
     <plugin name="cordova-plugin-admobpro"  />
     <plugin name="cordova-plugin-ga"  />
-    <plugin name="cordova-plugin-splashscreen"  />
-    <plugin name="cordova-plugin-x-socialsharing"  />
+
 </widget>
