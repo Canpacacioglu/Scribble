@@ -25,8 +25,7 @@
     </platform>
     <engine name="android" spec="~5.2.2" />
     <engine name="ios" spec="~4.2.1" />
-    <plugin name="nl-afas-cordova-plugin-securelocalstorage"  />
-    <plugin name="cordova-plugin-admobpro"  />
-    <plugin name="cordova-plugin-ga"  />
 
+    <plugin name="cordova-plugin-splashscreen"  />
+    <plugin name="cordova-plugin-x-socialsharing"  />
 </widget>
